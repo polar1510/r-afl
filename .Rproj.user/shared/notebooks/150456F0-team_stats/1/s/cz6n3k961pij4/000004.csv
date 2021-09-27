@@ -1,0 +1,3 @@
+"0","season_fryzigg <- fetch_player_stats(season = 2021, source = ""fryzigg"") # fryzigg does not have SC scores"
+"0","# season_footywire <- fetch_player_stats(season = 2021, source = ""footywire"") # currently footywire has SC scores, fryzigg does not"
+"0","# season_afltables = fetch_player_stats(source = ""afltables"") - currently has error that is fixed in devtools version of fitzRoy"

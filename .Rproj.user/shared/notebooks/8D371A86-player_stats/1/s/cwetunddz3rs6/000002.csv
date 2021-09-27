@@ -1,0 +1,3 @@
+"0","# problem with player names e.g. middle names, Dan/Daniel Butler"
+"0","# player_total_join <- left_join(player_totals_footywire, player_totals_fryzigg, by = c(""Player"" = ""player_name"", ""Team"" = ""player_team""))"
+"0","# player_avg_join <- left_join(player_avg_footywire, player_avg_fryzigg, by = c(""Player"" = ""player_name"", ""Team"" = ""player_team""))"

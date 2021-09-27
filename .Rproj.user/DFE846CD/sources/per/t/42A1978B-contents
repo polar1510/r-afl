@@ -1,0 +1,248 @@
+---
+title: "AFL Player Stats"
+author: "Timothy Davies"
+date: "18/05/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, include = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r}
+library(fitzRoy)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+```
+
+```{r fetch-data, eval=TRUE, cache=TRUE}
+season_fryzigg <- fetch_player_stats(season = 2021, source = "fryzigg") # fryzigg does not have SC scores
+# season_footywire <- fetch_player_stats(season = 2021, source = "footywire") # currently footywire has SC scores, fryzigg does not
+# season_afltables = fetch_player_stats(source = "afltables") - currently has error that is fixed in devtools version of fitzRoy
+```
+
+```{r player-totals-fryzigg}
+player_totals_fryzigg <- season_fryzigg %>% 
+  mutate(player_name = paste(player_first_name, player_last_name)) %>% 
+  group_by(player_name, player_team, guernsey_number, player_height_cm, player_weight_kg) %>% 
+  summarise(games = n(),
+            kicks = sum(kicks),
+            marks = sum(marks),
+            handballs = sum(handballs),
+            disposals = sum(disposals),
+            kick_handball_ratio = kicks/handballs,
+            effective_disposals = sum(effective_disposals),
+            disposal_efficiency_percentage = sum(disposal_efficiency_percentage),
+            goals = sum(goals),
+            behinds = sum(behinds),
+            hitouts = sum(hitouts),
+            tackles = sum(tackles),
+            rebounds = sum(rebounds),
+            inside_fifties = sum(inside_fifties),
+            clearances = sum(clearances),
+            clangers = sum(clangers),
+            free_kicks_for = sum(free_kicks_for),
+            free_kicks_against = sum(free_kicks_against),
+            brownlow_votes = sum(brownlow_votes),
+            contested_possessions = sum(contested_possessions),
+            uncontested_possessions = sum(uncontested_possessions),
+            contested_marks = sum(contested_marks),
+            marks_inside_fifty = sum(marks_inside_fifty),
+            one_percenters = sum(one_percenters),
+            bounces = sum(bounces),
+            goal_assists = sum(goal_assists),
+            time_on_ground_percentage = sum(time_on_ground_percentage),
+            afl_fantasy_score = sum(afl_fantasy_score),
+            supercoach_score = sum(supercoach_score),
+            centre_clearances = sum(centre_clearances),
+            stoppage_clearances = sum(stoppage_clearances),
+            score_involvements = sum(score_involvements),
+            metres_gained = sum(metres_gained),
+            turnovers = sum(turnovers),
+            intercepts = sum(intercepts),
+            tackles_inside_fifty = sum(tackles_inside_fifty),
+            contest_def_losses = sum(contest_def_losses),
+            contest_def_one_on_ones = sum(contest_def_one_on_ones),
+            contest_def_winrate = ((contest_def_one_on_ones - contest_def_losses)/contest_def_one_on_ones)*100,
+            contest_off_one_on_ones = sum(contest_off_one_on_ones),
+            contest_off_wins = sum(contest_off_wins),
+            contest_off_winrate = (contest_off_wins/contest_off_one_on_ones)*100,
+            def_half_pressure_acts = sum(def_half_pressure_acts),
+            effective_kicks = sum(effective_kicks),
+            f50_ground_ball_gets = sum(f50_ground_ball_gets),
+            ground_ball_gets = sum(ground_ball_gets),
+            hitouts_to_advantage = sum(hitouts_to_advantage),
+            marks_on_lead = sum(marks_on_lead),
+            pressure_acts = sum(pressure_acts),
+            rating_points = sum(rating_points),
+            ruck_contests = sum(ruck_contests),
+            score_launches = sum(score_launches),
+            shots_at_goal = sum(shots_at_goal),
+            spoils = sum(spoils))
+```
+
+```{r player-averages-fryzigg}
+player_avg_fryzigg <- season_fryzigg %>% 
+  mutate(player_name = paste(player_first_name, player_last_name)) %>% 
+  group_by(player_name, player_team, guernsey_number, player_height_cm, player_weight_kg) %>% 
+  summarise(games = n(),
+            kicks = mean(kicks),
+            marks = mean(marks),
+            handballs = mean(handballs),
+            disposals = mean(disposals),
+            kick_handball_ratio = kicks/handballs,
+            effective_disposals = mean(effective_disposals),
+            disposal_efficiency_percentage = mean(disposal_efficiency_percentage),
+            goals = mean(goals),
+            behinds = mean(behinds),
+            hitouts = mean(hitouts),
+            tackles = mean(tackles),
+            rebounds = mean(rebounds),
+            inside_fifties = mean(inside_fifties),
+            clearances = mean(clearances),
+            clangers = mean(clangers),
+            free_kicks_for = mean(free_kicks_for),
+            free_kicks_against = mean(free_kicks_against),
+            brownlow_votes = mean(brownlow_votes),
+            contested_possessions = mean(contested_possessions),
+            uncontested_possessions = mean(uncontested_possessions),
+            contested_marks = mean(contested_marks),
+            marks_inside_fifty = mean(marks_inside_fifty),
+            one_percenters = mean(one_percenters),
+            bounces = mean(bounces),
+            goal_assists = mean(goal_assists),
+            time_on_ground_percentage = mean(time_on_ground_percentage),
+            afl_fantasy_score = mean(afl_fantasy_score),
+            supercoach_score = mean(supercoach_score),
+            centre_clearances = mean(centre_clearances),
+            stoppage_clearances = mean(stoppage_clearances),
+            score_involvements = mean(score_involvements),
+            metres_gained = mean(metres_gained),
+            turnovers = mean(turnovers),
+            intercepts = mean(intercepts),
+            tackles_inside_fifty = mean(tackles_inside_fifty),
+            contest_def_losses = mean(contest_def_losses),
+            contest_def_one_on_ones = mean(contest_def_one_on_ones),
+            contest_def_winrate = ((contest_def_one_on_ones - contest_def_losses)/contest_def_one_on_ones)*100,
+            contest_off_one_on_ones = mean(contest_off_one_on_ones),
+            contest_off_wins = mean(contest_off_wins),
+            contest_off_winrate = (contest_off_wins/contest_off_one_on_ones)*100,
+            def_half_pressure_acts = mean(def_half_pressure_acts),
+            effective_kicks = mean(effective_kicks),
+            f50_ground_ball_gets = mean(f50_ground_ball_gets),
+            ground_ball_gets = mean(ground_ball_gets),
+            hitouts_to_advantage = mean(hitouts_to_advantage),
+            marks_on_lead = mean(marks_on_lead),
+            pressure_acts = mean(pressure_acts),
+            rating_points = mean(rating_points),
+            ruck_contests = mean(ruck_contests),
+            score_launches = mean(score_launches),
+            shots_at_goal = mean(shots_at_goal),
+            spoils = mean(spoils))
+```
+
+
+```{r player-totals-footywire}
+# player_totals_footywire <- season_footywire %>% 
+#   group_by(Player, Team) %>% 
+#   summarise(games = n(),
+#             contested_possesions = sum(CP),
+#             uncontested_possesions = sum(UP),
+#             effective_disposals = sum(ED),
+#             contested_marks = sum(CM),
+#             goal_assists = sum(GA),
+#             marks_inside_50 = sum(MI5),
+#             one_percenters = sum(One.Percenters),
+#             bounces = sum(BO),
+#             kicks = sum(K),
+#             handballs = sum(HB),
+#             disposals = sum(D),
+#             marks = sum(M),
+#             goals = sum(G),
+#             behinds = sum(B),
+#             tackles = sum(T),
+#             hitouts = sum(HO),
+#             inside_50s = sum(I50),
+#             clearances = sum(CL),
+#             clangers = sum(CG),
+#             rebound_50s = sum(R50),
+#             frees_for = sum(FF),
+#             frees_against = sum(FA),
+#             afl_fantasy = sum(AF),
+#             centre_clearances = sum(CCL),
+#             stoppage_clearances = sum(SCL),
+#             supercoach = sum(SC),
+#             score_involvements = sum(SI),
+#             metres_gained = sum(MG),
+#             turnovers = sum(TO),
+#             intercepts = sum(ITC),
+#             tackles_in_50 = sum(T5)
+#             )
+```
+
+```{r player-averages-footywire}
+# player_avg_footywire <- season_footywire %>% 
+#   group_by(Player, Team) %>% 
+#   summarise(games = n(),
+#             contested_possesions = sum(CP)/games,
+#             uncontested_possesions = sum(UP)/games,
+#             effective_disposals = sum(ED)/games,
+#             contested_marks = sum(CM)/games,
+#             goal_assists = sum(GA)/games,
+#             marks_inside_50 = sum(MI5)/games,
+#             one_percenters = sum(One.Percenters)/games,
+#             bounces = sum(BO)/games,
+#             kicks = sum(K)/games,
+#             handballs = sum(HB)/games,
+#             disposals = sum(D)/games,
+#             marks = sum(M)/games,
+#             goals = sum(G)/games,
+#             behinds = sum(B)/games,
+#             tackles = sum(T)/games,
+#             hitouts = sum(HO)/games,
+#             inside_50s = sum(I50)/games,
+#             clearances = sum(CL)/games,
+#             clangers = sum(CG)/games,
+#             rebound_50s = sum(R50)/games,
+#             frees_for = sum(FF)/games,
+#             frees_against = sum(FA)/games,
+#             afl_fantasy = sum(AF)/games,
+#             centre_clearances = sum(CCL)/games,
+#             stoppage_clearances = sum(SCL)/games,
+#             supercoach = sum(SC)/games,
+#             score_involvements = sum(SI)/games,
+#             metres_gained = sum(MG)/games,
+#             turnovers = sum(TO)/games,
+#             intercepts = sum(ITC)/games,
+#             tackles_in_50 = sum(T5)/games
+#             )
+```
+
+
+```{r joins}
+# problem with player names e.g. middle names, Dan/Daniel Butler
+# player_total_join <- left_join(player_totals_footywire, player_totals_fryzigg, by = c("Player" = "player_name", "Team" = "player_team"))
+# player_avg_join <- left_join(player_avg_footywire, player_avg_fryzigg, by = c("Player" = "player_name", "Team" = "player_team"))
+```
+
+
+```{r scoring-proportion, include=TRUE}
+player_si_disposals <- player_avg_fryzigg %>% 
+  select(player_name, player_team, games, disposals, score_involvements, goal_assists, clearances) %>% 
+  filter(games >= 7) %>%
+  filter(disposals >= 20)
+
+fig_si_disposals <- plot_ly(
+  data = player_si_disposals, x = ~disposals, y = ~score_involvements, color = ~clearances,
+  text = ~paste("Team:", player_team, "<br>Player:", player_name, "<br>SI:", round(score_involvements, 1), "<br>D:", round(disposals, 1))
+)
+fig_si_disposals <- fig_si_disposals %>% 
+  layout(title = 'Score Involvements vs. Disposals (Average)',
+         xaxis = list(title = 'Average Disposals'),
+         yaxis = list(title = 'Average Score Involvements'))
+fig_si_disposals
+```
+
+
