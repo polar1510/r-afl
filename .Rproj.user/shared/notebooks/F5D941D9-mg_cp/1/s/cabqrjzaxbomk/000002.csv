@@ -1,0 +1,30 @@
+"0","player_cp_mg <- player_avg_fryzigg %>% "
+"0","  select(player_name, player_team, games, contested_possessions, metres_gained)"
+"1","Adding missing grouping variables: `guernsey_number`, `player_height_cm`
+"
+"0","fig_cp_mg <- plot_ly("
+"0","  data = player_cp_mg, x = ~contested_possessions, y = ~metres_gained,"
+"0","  text = ~paste(""Team:"", player_team, ""<br>Player:"", player_name, ""<br>CP:"", round(contested_possessions, 1), ""<br>MG:"", round(metres_gained, 1)),"
+"0","  hover_info = text"
+"0",")"
+"0","fig_cp_mg <- fig_cp_mg %>% "
+"0","  layout(title = 'Metres Gained vs. Contested Possessions (Average)',"
+"0","         xaxis = list(title = 'Average CP'),"
+"0","         yaxis = list(title = 'Average MG'))"
+"0","fig_cp_mg"
+"2","No trace type specified:
+  Based on info supplied, a 'scatter' trace seems appropriate.
+  Read more about this trace type -> https://plotly.com/r/reference/#scatter
+"
+"2","No scatter mode specifed:
+  Setting the mode to markers
+  Read more about this attribute -> https://plotly.com/r/reference/#scatter-mode
+"
+"2","No trace type specified:
+  Based on info supplied, a 'scatter' trace seems appropriate.
+  Read more about this trace type -> https://plotly.com/r/reference/#scatter
+"
+"2","No scatter mode specifed:
+  Setting the mode to markers
+  Read more about this attribute -> https://plotly.com/r/reference/#scatter-mode
+"

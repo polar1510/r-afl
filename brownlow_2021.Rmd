@@ -169,13 +169,13 @@ player_avg_home_away <- season_home_away %>%
 
 ```{r scoring-proportion, include=TRUE}
 player_si_disposals <- player_avg_home_away %>% 
-  select(player_name, player_team, games, disposals, score_involvements, goal_assists, clearances) %>% 
+  select(first_name, last_name, team, games, disposals, score_involvements, goal_assists, clearances) %>% 
   filter(games >= 7) %>%
   filter(disposals >= 20)
 
 fig_si_disposals <- plot_ly(
-  data = player_si_disposals, x = ~disposals, y = ~score_involvements, color = ~clearances,
-  text = ~paste("Team:", player_team, "<br>Player:", player_name, "<br>SI:", round(score_involvements, 1), "<br>D:", round(disposals, 1))
+  data = player_si_disposals, x = ~disposals, y = ~score_involvements,
+  text = ~paste("Team:", team, "<br>Player:", first_name, last_name, "<br>SI:", round(score_involvements, 1), "<br>D:", round(disposals, 1))
 )
 fig_si_disposals <- fig_si_disposals %>% 
   layout(title = 'Score Involvements vs. Disposals (Average)',
